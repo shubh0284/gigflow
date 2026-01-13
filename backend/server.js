@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://gigflow-eight-kappa.vercel.app"],
     credentials: true, // ✅ Mandatory for HttpOnly cookies
   })
 );
