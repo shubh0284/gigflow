@@ -27,14 +27,14 @@ exports.register = async (req, res) => {
 
     const token = createToken(newUser._id);
 
+    // ✅ UPDATED FOR DEPLOYMENT
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true, // Required for cross-site cookies
+      sameSite: "none", // Allows Vercel to send cookies to Render
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // Consistent _id property for the frontend
     res.status(201).json({
       message: "User registered successfully",
       user: { _id: newUser._id, name, email },
@@ -58,14 +58,14 @@ exports.login = async (req, res) => {
 
     const token = createToken(user._id);
 
+    // ✅ UPDATED FOR DEPLOYMENT
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true, // Required for cross-site cookies
+      sameSite: "none", // Allows Vercel to send cookies to Render
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // Consistent _id property for the frontend
     res.status(200).json({
       message: "Login successful",
       user: { _id: user._id, name: user.name, email },
@@ -77,6 +77,11 @@ exports.login = async (req, res) => {
 
 // LOGOUT
 exports.logout = (req, res) => {
-  res.clearCookie("token"); // remove cookie
+  // ✅ Ensure logout also uses the same cross-site settings
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
   res.status(200).json({ message: "Logged out successfully" });
 };

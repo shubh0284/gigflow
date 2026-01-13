@@ -1,5 +1,5 @@
 const express = require("express");
-const http = require("http"); // Required for Socket.io
+const http = require("http");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -7,12 +7,15 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./utils/db");
 const authRoutes = require("./routes/authRoutes");
 const gigRoutes = require("./routes/gigRoutes");
-const { initSocket } = require("./socket"); // ✅ Import your socket helper
+const { initSocket } = require("./socket");
 
 dotenv.config();
 connectDB();
 
 const app = express();
+
+// ✅ 1. ADDED TRUST PROXY (Required for Render to handle secure cookies properly)
+app.set("trust proxy", 1);
 
 // ✅ MIDDLEWARES
 app.use(express.json());
@@ -20,8 +23,11 @@ app.use(cookieParser());
 
 app.use(
   cors({
+    // ✅ Ensure your Vercel URL has NO trailing slash at the end
     origin: ["http://localhost:5173", "https://gigflow-eight-kappa.vercel.app"],
-    credentials: true, // ✅ Mandatory for HttpOnly cookies
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -34,11 +40,9 @@ app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
-// ✅ SOCKET.IO INTEGRATION
-const server = http.createServer(app); // Create the HTTP server using app
-initSocket(server); // Initialize Socket.io with that server
+const server = http.createServer(app);
+initSocket(server);
 
-// ✅ START SERVER
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server started on port ${PORT} with Socket support`);
