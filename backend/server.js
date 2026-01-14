@@ -30,10 +30,11 @@ app.use(
       "https://gigflow-kyl8ok51s-shubham-shinares-projects.vercel.app",
     ],
     credentials: true,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+app.options("*", cors());
 
 // ✅ ROUTES
 app.use("/api/auth", authRoutes);
