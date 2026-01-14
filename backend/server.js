@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./utils/db");
 const authRoutes = require("./routes/authRoutes");
 const gigRoutes = require("./routes/gigRoutes");
+const bidRoutes = require("./routes/bidRoutes");
 const { initSocket } = require("./socket");
 
 dotenv.config();
@@ -14,16 +15,16 @@ connectDB();
 
 const app = express();
 
-// ✅ 1. ADDED TRUST PROXY (Required for Render to handle secure cookies properly)
+// ✅ REQUIRED FOR RENDER (secure cookies + proxy)
 app.set("trust proxy", 1);
 
 // ✅ MIDDLEWARES
 app.use(express.json());
 app.use(cookieParser());
 
+// ✅ CORS (THIS ALONE HANDLES OPTIONS REQUESTS)
 app.use(
   cors({
-    // ✅ Ensure your Vercel URL has NO trailing slash at the end
     origin: [
       "http://localhost:5173",
       "https://gigflow-eight-kappa.vercel.app",
@@ -34,12 +35,13 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.options("*", cors());
+
+// ❌ REMOVED app.options("*", cors());
 
 // ✅ ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/gigs", gigRoutes);
-app.use("/api/bids", require("./routes/bidRoutes"));
+app.use("/api/bids", bidRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is running!");
