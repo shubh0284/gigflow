@@ -24,9 +24,13 @@ app.use(cookieParser());
 app.use(
   cors({
     // ✅ Ensure your Vercel URL has NO trailing slash at the end
-    origin: ["http://localhost:5173", "https://gigflow-eight-kappa.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://gigflow-eight-kappa.vercel.app",
+      "https://gigflow-kyl8ok51s-shubham-shinares-projects.vercel.app",
+    ],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
