@@ -8,6 +8,7 @@ const initSocket = (server) => {
       origin: [
         "http://localhost:5173",
         "https://gigflow-eight-kappa.vercel.app",
+        "https://gigflow-kyl8ok51s-shubham-shinares-projects.vercel.app",
       ],
       credentials: true,
     },
